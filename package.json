@@ -1,0 +1,13 @@
+{
+  "name": "library-loans",
+  "version": "1.0.0",
+  "description": "Практична робота № 8. Пояснення та виправлення коду з AI-асистентом",
+  "main": "src/library.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.0.0"
+  }
+}

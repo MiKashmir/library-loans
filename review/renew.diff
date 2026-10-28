@@ -1,0 +1,45 @@
+diff --git a/src/library.js b/src/library.js
+index 0c73092..54f219f 100644
+--- a/src/library.js
++++ b/src/library.js
+@@ -19,9 +19,9 @@ function dueDate(issueDate, days = LOAN_DAYS) {
+ }
+ 
+ function calculateFine(due, returnedAt) {
+-  const late = returnedAt.getDate() - due.getDate();
+-  if (late <= 0) return 0;
+-  return Math.min(late * FINE_PER_DAY, MAX_FINE);
++  const d = returnedAt.getDate() - due.getDate();
++  if (d <= 0) return 0;
++  return Math.min(d * FINE_PER_DAY, MAX_FINE);
+ }
+ 
+ function groupByReader(loans) {
+@@ -61,7 +61,12 @@ function returnBook(loan, returnedAt) {
+   return calculateFine(loan.due, returnedAt);
+ }
+ 
++function renewLoan(loan) {
++  loan.due = dueDate(loan.due, 7);
++  return loan;
++}
++
+ module.exports = {
+   LOAN_DAYS, FINE_PER_DAY, MAX_FINE, MAX_ACTIVE,
+-  isValidCard, dueDate, calculateFine, canBorrow, issueBook, returnBook,
++  isValidCard, dueDate, calculateFine, canBorrow, issueBook, returnBook, renewLoan,
+ };
+diff --git a/tests/library.test.js b/tests/library.test.js
+index 6d7a24d..6ed3fde 100644
+--- a/tests/library.test.js
++++ b/tests/library.test.js
+@@ -28,3 +28,9 @@ test("читач із трьома книгами не може взяти че
+   const loans = [1, 2, 3].map((bookId) => ({ readerId: 1, bookId, returnedAt: null }));
+   expect(lib.canBorrow(reader, loans)).toBe(false);
+ });
++
++test("продовження працює", () => {
++  const loan = { due: new Date(2026, 8, 15), returnedAt: null };
++  lib.renewLoan(loan);
++  expect(loan.due).toBeDefined();
++});
